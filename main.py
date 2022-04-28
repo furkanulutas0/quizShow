@@ -1,20 +1,62 @@
 import random
-import time
 from tkinter import *
-import pyglet
-from tkinter import ttk
-pyglet.font.add_file('fonts/minecraft.ttf')
+from tkinter import messagebox
 
-_questions = [("Soru 1 metni", "A", ["A) 1" , "B) 2" ,"C) 3","D) 4"] , 100), #Soru-Cevap-Şıklar-Puan
-              ("2+2 kaçtır", "B", ["A) 5", "B) 6","C) 7","D) 8"], 100), #Soru-Cevap-Şıklar-Puan
-              ("Doğuşun en güçlü kulübü", "C", ["A) 9", "B) 10","C) 11","D) 12"], 300), #Soru-Cevap-Şıklar-Puan
-              ("Print(Hello, World] kodunun çıktısı nedir?", "D" ,["A) 13", "B) 14", "C) 15", "D) 16"], 550) #Soru-Cevap-Şıklar-Puan
+_questions = [("Hangi ülkenin iki tane başkenti vardır?", "A", ["Güney Afrika", "Senegal", "El Salvador", "Venezuela"], 100),  # Soru-Cevap-Şıklar-Puan
+              ('"Sinekli Bakkal" romanının yazarı kimdir?', "B", ["Reşat Nuri Güntekin", "Halide Edip Adıvar", "Ziya Gökalp", "Ömer Seyfettin"], 100),  # Soru-Cevap-Şıklar-Puan
+              ("Mehmet Akif İstiklal Marşını nerede yazmıştır?", "D", ["Ayasofya", "Keçiören Camii", "Galata kulesi", "Tacettin Dergahı"], 100),  # Soru-Cevap-Şıklar-Puan
+              ("Asprinin ham maddesesi olan ağaç hangisidir?", "B", ["Çınar", "Söğüt", "Kavak", "Gürgen"], 100),
+              ("Tiger Woods hangi sporun önemli temsilcisidir?", "D", ["Basketbol", "Futbol", "Beyzbol", "Golf"], 100),
+              ("En uzun gecenin yaşandığı tarih hangisidir?", "A", ["21 Aralık", "21 Haziran", "21 Şubat", "21 Mart"], 100),
+              ("FIFA'ya göre futbolun doğduğu ülke hangisidir?", "C", ["İngiltere", "Brezilya", "Çin", "Almanya"], 100),
+              ('"BÜLBÜL" Destanı hangi ilimizin işgali üzerine yazılmıştır?', "C", ["İzmir", "Adana", "Bursa", "Sakarya"], 100),
+              ("Bozkırın 'Tezenesi' olarak anılan halk ozanı kimdir?", "C", ["Aşık Veysel", "Musa Eroğlu", "Neşet Ertaş", "Aşık Mahsuni Şerif"], 100),
+              ("Genetik olarak başarıyla kopyalanan ilk canlı hangisidir", "B", ["At", "Koyun", "Fare", "Maymun"], 100)
+              # Soru-Cevap-Şıklar-Puan
               ]
 
+trueAnswerPoint = 0
+wrongAnswerPoint = 0
+totalAnswerPoint = 0
+queCounter = 1
+
+def resetPoints():
+    global totalAnswerPoint, trueAnswerPoint, wrongAnswerPoint, queCounter
+    totalAnswerPoint = 0
+    trueAnswerPoint = 0
+    wrongAnswerPoint = 0
+    queCounter = 1
+
+def resetQuestions():
+    global _questions
+    _questions = [
+        ("Hangi ülkenin iki tane başkenti vardır?", "A", ["Güney Afrika", "Senegal", "El Salvador", "Venezuela"], 100),
+        # Soru-Cevap-Şıklar-Puan
+        ('"Sinekli Bakkal" romanının yazarı kimdir?', "B",
+         ["Reşat Nuri Güntekin", "Halide Edip Adıvar", "Ziya Gökalp", "Ömer Seyfettin"], 100),  # Soru-Cevap-Şıklar-Puan
+        ("Mehmet Akif İstiklal Marşını nerede yazmıştır?", "D",
+         ["Ayasofya", "Keçiören Camii", "Galata kulesi", "Tacettin Dergahı"], 100),  # Soru-Cevap-Şıklar-Puan
+        ("Asprinin ham maddesesi olan ağaç hangisidir?", "B", ["Çınar", "Söğüt", "Kavak", "Gürgen"], 100),
+        ("Tiger Woods hangi sporun önemli temsilcisidir?", "D", ["Basketbol", "Futbol", "Beyzbol", "Golf"], 100),
+        ("En uzun gecenin yaşandığı tarih hangisidir?", "A", ["21 Aralık", "21 Haziran", "21 Şubat", "21 Mart"], 100),
+        ("FIFA'ya göre futbolun doğduğu ülke hangisidir?", "C", ["İngiltere", "Brezilya", "Çin", "Almanya"], 100),
+        ('"BÜLBÜL" Destanı hangi ilimizin işgali üzerine yazılmıştır?', "C", ["İzmir", "Adana", "Bursa", "Sakarya"],
+         100),
+        ("Bozkırın 'Tezenesi' olarak anılan halk ozanı kimdir?", "C",
+         ["Aşık Veysel", "Musa Eroğlu", "Neşet Ertaş", "Aşık Mahsuni Şerif"], 100),
+        ("Genetik olarak başarıyla kopyalanan ilk canlı hangisidir", "B", ["At", "Koyun", "Fare", "Maymun"], 100)
+        # Soru-Cevap-Şıklar-Puan
+        ]
 
 def selectQue():
-        global selectQuestion, selectedQuestion, selectedAnswer, selectedPoint, selectedOption1, selectedOption2,selectedOption3,selectedOption4
-
+    global selectQuestion, selectedQuestion, selectedAnswer, selectedPoint, selectedOption1, selectedOption2, selectedOption3, selectedOption4
+    if queCounter == 11:
+        window.destroy()
+        winGame()
+    elif len(_questions) == 0:
+        window.destroy()
+        nonQuestionScreen()
+    else:
         selectQuestion = random.choice(_questions)
 
         selectedQuestion = selectQuestion[0]
@@ -27,39 +69,109 @@ def selectQue():
 
         _questions.remove(selectQuestion)
 
-def writeQue():
+        if queCounter == 2:
+            queProgress_1.config(bg='green')
+            queProgress_2.config(bg='orange')
+        elif queCounter == 3:
+            queProgress_2.config(bg='green')
+            queProgress_3.config(bg='orange')
+        elif queCounter == 4:
+            queProgress_3.config(bg='green')
+            queProgress_4.config(bg='orange')
+        elif queCounter == 5:
+            queProgress_4.config(bg='green')
+            queProgress_5.config(bg='orange')
+        elif queCounter == 6:
+            queProgress_5.config(bg='green')
+            queProgress_6.config(bg='orange')
+        elif queCounter == 7:
+            queProgress_6.config(bg='green')
+            queProgress_7.config(bg='orange')
+        elif queCounter == 8:
+            queProgress_7.config(bg='green')
+            queProgress_8.config(bg='orange')
+        elif queCounter == 9:
+            queProgress_8.config(bg='green')
+            queProgress_9.config(bg='orange')
+        elif queCounter == 10:
+            queProgress_9.config(bg='green')
+            queProgress_10.config(bg='orange')
+##
+        if totalAnswerPoint < 100 :
+            pointProgress_1.config(bg='orange')
+        elif totalAnswerPoint == 100:
+            pointProgress_1.config(bg='blue')
+            pointProgress_2.config(bg='orange')
+        elif totalAnswerPoint == 200:
+            pointProgress_2.config(bg='blue')
+            pointProgress_3.config(bg='orange')
+        elif totalAnswerPoint == 300:
+            pointProgress_3.config(bg='blue')
+            pointProgress_4.config(bg='orange')
+        elif totalAnswerPoint == 400:
+            pointProgress_4.config(bg='blue')
+            pointProgress_5.config(bg='orange')
+        elif totalAnswerPoint == 500:
+            pointProgress_5.config(bg='blue')
+            pointProgress_6.config(bg='orange')
+        elif totalAnswerPoint == 600:
+            pointProgress_6.config(bg='blue')
+            pointProgress_7.config(bg='orange')
+        elif totalAnswerPoint == 700:
+            pointProgress_7.config(bg='blue')
+            pointProgress_8.config(bg='orange')
+        elif totalAnswerPoint == 800:
+            pointProgress_8.config(bg='blue')
+            pointProgress_9.config(bg='orange')
+        elif totalAnswerPoint == 900:
+            pointProgress_9.config(bg='blue')
+            pointProgress_10.config(bg='green')
 
+def writeQue():
     questionAreaText.config(text=f'{selectedQuestion}')
     OptionText_1.config(text=f'{selectedOption1}')
     OptionText_2.config(text=f'{selectedOption2}')
     OptionText_3.config(text=f'{selectedOption3}')
     OptionText_4.config(text=f'{selectedOption4}')
 
-
 def checkAnswer():
+    global trueAnswerPoint, wrongAnswerPoint, totalAnswerPoint, queCounter
     trueAnswer = str(selectedAnswer)
 
     if trueAnswer == userAnswer:
-        print("Doğru Cevap")
+        trueAnswerPoint = trueAnswerPoint + 1
+        totalAnswerPoint = totalAnswerPoint + selectedPoint
+        queCounter = queCounter + 1
+        print(f"Doğru Cevap: Kaçıncı soru {queCounter}")
         selectQue()
         writeQue()
     elif trueAnswer == userAnswer:
-        print("Doğru Cevap")
-
+        trueAnswerPoint = trueAnswerPoint + 1
+        totalAnswerPoint = totalAnswerPoint + selectedPoint
+        queCounter = queCounter + 1
+        print(f"Doğru Cevap: Kaçıncı soru {queCounter}")
         selectQue()
         writeQue()
     elif trueAnswer == userAnswer:
-        print("Doğru")
+        trueAnswerPoint = trueAnswerPoint + 1
+        totalAnswerPoint = totalAnswerPoint + selectedPoint
+        queCounter = queCounter + 1
+        print(f"Doğru Cevap: Kaçıncı soru {queCounter}")
         selectQue()
         writeQue()
     elif trueAnswer == userAnswer:
-        print("Doğr Cevap")
+        trueAnswerPoint = trueAnswerPoint + 1
+        totalAnswerPoint = totalAnswerPoint + selectedPoint
+        queCounter = queCounter + 1
+        print(f"Doğru Cevap: Kaçıncı soru {queCounter}")
         selectQue()
         writeQue()
     else:
         print("Yanlış Cevap")
+        wrongAnswerPoint = wrongAnswerPoint + 1
+        totalAnswerPoint = totalAnswerPoint - selectedPoint
         window.destroy()
-        finishScreen()
+        eliminatedScreen()
 
 def selectAnswerA():
     global userAnswer
@@ -92,13 +204,18 @@ def startScreen():
     frameBG = Canvas(window, bg='#3c3f41')
     frameBG.place(relx=0, rely=0, relwidth=1, relheight=1)
 
+    versionText = Label(window, text='version v.2.1', bg='grey')
+    versionText.place(relx=0.90, rely=0.97, relheight=0.025, relwidth=0.095 )
+
     buttonsArea = Frame(window, bg='white')
     buttonsArea.place(relx=0.3, rely=0.4, relwidth=0.4, relheight=0.1)
 
-    buttonStart = Button(buttonsArea, text='Başla!', bg='#32a852', font='Calbri 12 bold', command=lambda:[window.destroy(), mainScreen()])
+    buttonStart = Button(buttonsArea, text='Başla!', bg='#32a852', font='Calbri 12 bold',
+                         command=lambda: [window.destroy(), mainScreen()])
     buttonStart.place(relx=0, rely=0, relwidth=0.5, relheight=1)
 
-    buttonHelp = Button(buttonsArea, text='Nasıl Oynanır?', bg='#2596be', font='Calbri 12', command=lambda:[window.destroy(),helpScreen()])
+    buttonHelp = Button(buttonsArea, text='Nasıl Oynanır?', bg='#2596be', font='Calbri 12',
+                        command=lambda: [window.destroy(), helpScreen()])
     buttonHelp.place(relx=0.5, rely=0, relwidth=0.5, relheight=1)
 
     window.mainloop()
@@ -123,23 +240,21 @@ def helpScreen():
 
     infoArea = Frame(window, bg='#6B6D6D')
     infoArea.place(relx=0.25, rely=0.3, relwidth=0.5, relheight=0.5)
-    infoLabel = Label(infoArea, text=f'{infoText}', font='calbri 11 bold', bg='#6B6D6D',justify=CENTER, )
+    infoLabel = Label(infoArea, text=f'{infoText}', font='calbri 11 bold', bg='#6B6D6D', justify=CENTER, )
     infoLabel.place(relx=0, rely=0, relwidth=1, relheight=1)
 
     backButtonArea = Frame(window)
     backButtonArea.place(relx=0.6, rely=0.82, relwidth=0.1, relheight=0.05)
-    backButton = Button(backButtonArea, text='Ana Menü', bg='white', font='calbri 10', command=lambda:[window.destroy(), startScreen()])
+    backButton = Button(backButtonArea, text='Ana Menü', bg='white', font='calbri 10',
+                        command=lambda: [window.destroy(), startScreen()])
     backButton.place(relx=0, rely=0, relwidth=1, relheight=1)
-
-
 
     window.mainloop()
 
 def mainScreen():
-
-
-    global questionAreaText, Option_1_button, Option_2_button, Option_3_button, Option_4_button, OptionText_1,OptionText_2,OptionText_3,OptionText_4, time_progressBar,time_progressBarText, window
-
+    global questionAreaText, Option_1_button, Option_2_button, Option_3_button, Option_4_button, OptionText_1, OptionText_2, OptionText_3, OptionText_4
+    global time_progressBar, time_progressBarText, window, queProgress_1, queProgress_2, queProgress_3,queProgress_4,queProgress_5,queProgress_6,queProgress_7,queProgress_8,queProgress_9,queProgress_10
+    global pointProgress_1, pointProgress_2, pointProgress_3,pointProgress_4,pointProgress_5,pointProgress_6,pointProgress_7,pointProgress_8,pointProgress_9,pointProgress_10
     window = Tk()
     window.title("Bilgi Yarışması")
     window.geometry("800x600")
@@ -150,6 +265,9 @@ def mainScreen():
     frameBG = Canvas(window, bg='#3c3f41')
     frameBG.place(relx=0, rely=0, relwidth=1, relheight=1)
 
+    versionText = Label(window, text='version v.2.1', bg='grey')
+    versionText.place(relx=0.90, rely=0.97, relheight=0.025, relwidth=0.095 )
+
     questionArea = Frame(frameBG, bg='green')
     questionArea.place(relx=0.15, rely=0.35, relwidth=0.7, relheight=0.1)
 
@@ -159,18 +277,18 @@ def mainScreen():
     time_progressBar = Frame(frameBG, bg='yellow')
     time_progressBar.place(relx=0.15, rely=0.47, relwidth=0.7, relheight=0.02)
 
-#    time_progressBarText = Label(time_progressBar, text=f"Time")
-#    time_progressBarText.pack()
+    #    time_progressBarText = Label(time_progressBar, text=f"Time")
+    #    time_progressBarText.pack()
 
     answerArea = Frame(frameBG, bg='cyan')
     answerArea.place(relx=0.15, rely=0.50, relwidth=0.7, relheight=0.15)
 
-###### ŞIKLAR
+    ###### ŞIKLAR
 
     Option_1_area = Frame(answerArea, bg='white', )
     Option_1_area.place(relx=0, rely=0, relwidth=0.1, relheight=0.5)
 
-    Option_1_button = Button(Option_1_area, bg='grey',activebackground='orange', text="A", font='calbri 12 bold',)
+    Option_1_button = Button(Option_1_area, bg='grey', activebackground='orange', text="A", font='calbri 12 bold', )
     Option_1_button.place(relx=0, rely=0, relwidth=1, relheight=1)
 
     OptionTextArea_1 = Frame(answerArea, bg='grey', )
@@ -182,7 +300,7 @@ def mainScreen():
     Option_2_area = Frame(answerArea, bg='grey')
     Option_2_area.place(relx=0.9, rely=0, relwidth=0.1, relheight=0.5)
 
-    Option_2_button = Button(Option_2_area, bg='white',activebackground='orange', text="B", font='calbri 12 bold',)
+    Option_2_button = Button(Option_2_area, bg='white', activebackground='orange', text="B", font='calbri 12 bold', )
     Option_2_button.place(relx=0, rely=0, relwidth=1, relheight=1)
 
     OptionTextArea_2 = Frame(answerArea, bg='grey', )
@@ -194,7 +312,7 @@ def mainScreen():
     Option_3_area = Frame(answerArea, bg='grey')
     Option_3_area.place(relx=0, rely=0.5, relwidth=0.1, relheight=0.5)
 
-    Option_3_button = Button(Option_3_area, bg='white',activebackground='orange', text="C", font='calbri 12 bold',)
+    Option_3_button = Button(Option_3_area, bg='white', activebackground='orange', text="C", font='calbri 12 bold', )
     Option_3_button.place(relx=0, rely=0, relwidth=1, relheight=1)
 
     OptionTextArea_3 = Frame(answerArea, bg='grey', )
@@ -206,7 +324,7 @@ def mainScreen():
     Option_4_area = Frame(answerArea, bg='white')
     Option_4_area.place(relx=0.9, rely=0.5, relwidth=0.1, relheight=0.5)
 
-    Option_4_button = Button(Option_4_area, bg='grey',activebackground='orange', text="D", font='calbri 12 bold',)
+    Option_4_button = Button(Option_4_area, bg='grey', activebackground='orange', text="D", font='calbri 12 bold', )
     Option_4_button.place(relx=0, rely=0, relwidth=1, relheight=1)
 
     OptionTextArea_4 = Frame(answerArea, bg='grey')
@@ -218,11 +336,13 @@ def mainScreen():
     strtBtnArea = Frame(window, bg='white')
     strtBtnArea.place(relx=0.7, rely=0.7, relwidth=0.07, relheight=0.05)
 
-    strtBtn = Button(strtBtnArea, bg='green',activebackground='orange', text="BAŞLA", font='calbri 8', command=lambda:[selectQue(),writeQue(), strtBtn.destroy(), strtBtnArea.destroy(), queProgress_1.config(bg='orange'),
-                                                                                                                       Option_1_button.config(command=lambda:[selectAnswerA(), checkAnswer()]),
-                                                                                                                       Option_2_button.config(command=lambda:[selectAnswerB(), checkAnswer()]),
-                                                                                                                       Option_3_button.config(command=lambda:[selectAnswerC(), checkAnswer()]),
-                                                                                                                       Option_4_button.config(command=lambda:[selectAnswerD(), checkAnswer()])])
+    strtBtn = Button(strtBtnArea, bg='green', activebackground='orange', text="BAŞLA", font='calbri 8',
+                     command=lambda: [selectQue(), writeQue(), resetPoints(), resetQuestions(), strtBtn.destroy(), strtBtnArea.destroy(),
+                                      queProgress_1.config(bg='orange'),
+                                      Option_1_button.config(command=lambda: [selectAnswerA(), checkAnswer()]),
+                                      Option_2_button.config(command=lambda: [selectAnswerB(), checkAnswer()]),
+                                      Option_3_button.config(command=lambda: [selectAnswerC(), checkAnswer()]),
+                                      Option_4_button.config(command=lambda: [selectAnswerD(), checkAnswer()])])
     strtBtn.place(relx=0, rely=0, relwidth=1, relheight=1)
 
     ###### Sağ Kısım
@@ -279,7 +399,7 @@ def mainScreen():
 
     window.mainloop()
 
-def finishScreen():
+def eliminatedScreen():
     window = Tk()
 
     window.title("Bilgi Yarışması")
@@ -291,48 +411,169 @@ def finishScreen():
     frameBG = Canvas(window, bg='#3c3f41')
     frameBG.place(relx=0, rely=0, relwidth=1, relheight=1)
 
+    versionText = Label(window, text='version v.2.1', bg='grey')
+    versionText.place(relx=0.90, rely=0.97, relheight=0.025, relwidth=0.095 )
+
     eliminateTextArea = Frame(frameBG, bg='#3c3f41')
     eliminateTextArea.place(relx=0.33, rely=0.2, relwidth=0.33, relheight=0.03)
 
-    eliminateText = Label(eliminateTextArea, text="E  L  E  N  D  I  N  !", bg='#3c3f41',foreground='red', font='minecraft 16 bold')
+    eliminateText = Label(eliminateTextArea, text="E  L  E  N  D  I  N  !", bg='#3c3f41', foreground='red',
+                          font='trebuchetms 16 bold')
     eliminateText.place(relx=0, rely=0.1, relwidth=1, relheight=0.99)
 
     scoreBoardArea = Frame(frameBG, bg='#2f2f2f')
     scoreBoardArea.place(relx=0.4, rely=0.35, relwidth=0.2, relheight=0.2)
 
-    scoreBoardTrueScore = Label(scoreBoardArea, text=f'Doğru Cevap: ', bg= 'grey',font='minecraft 11' ,justify=LEFT)
+    scoreBoardTrueScore = Label(scoreBoardArea, text=f'Doğru Cevap: ', bg='grey', font='calbri 11', justify=LEFT)
     scoreBoardTrueScore.place(relx=0, rely=0, relwidth=0.8, relheight=0.3)
 
-    scoreText = Label(scoreBoardArea, bg='white', text='')
+    scoreText = Label(scoreBoardArea, bg='white', text=f'{trueAnswerPoint}')
     scoreText.place(relx=0.8, rely=0, relwidth=0.2, relheight=0.3)
 
-    scoreBoardWrongScore = Label(scoreBoardArea, text=f'Yanlış Cevap: ', bg= 'grey',font='minecraft 11' ,justify=LEFT)
+    scoreBoardWrongScore = Label(scoreBoardArea, text=f'Yanlış Cevap: ', bg='grey', font='calbri 11', justify=LEFT)
     scoreBoardWrongScore.place(relx=0, rely=0.35, relwidth=0.8, relheight=0.3)
 
-    scoreText2 = Label(scoreBoardArea, bg='white', text='')
+    scoreText2 = Label(scoreBoardArea, bg='white', text=f'{wrongAnswerPoint}')
     scoreText2.place(relx=0.8, rely=0.35, relwidth=0.2, relheight=0.3)
 
-    scoreBoardPointScore = Label(scoreBoardArea, text=f'Toplam Puan: ', bg= 'grey',font='minecraft 11', justify=LEFT)
+    scoreBoardPointScore = Label(scoreBoardArea, text=f'Toplam Puan: ', bg='grey', font='calbri 11', justify=LEFT)
     scoreBoardPointScore.place(relx=0, rely=0.7, relwidth=0.8, relheight=0.3)
 
-    scoreText3 = Label(scoreBoardArea, bg='white', text='')
+    scoreText3 = Label(scoreBoardArea, bg='white', text=f'{totalAnswerPoint}')
     scoreText3.place(relx=0.8, rely=0.7, relwidth=0.2, relheight=0.3)
 
     buttonsArea = Frame(window, bg='white')
     buttonsArea.place(relx=0.4, rely=0.7, relwidth=0.2, relheight=0.08)
 
-    buttonStart = Button(buttonsArea, text='Yeniden Başla', bg='#32a852', font='Calbri 12 bold',wraplength=100,  command=lambda:[window.destroy(), mainScreen()])
+    buttonStart = Button(buttonsArea, text='Yeniden Başla', bg='#32a852', font='Calbri 12 bold', wraplength=100,
+                         command=lambda: [window.destroy(), resetPoints(), resetQuestions(), mainScreen()])
     buttonStart.place(relx=0, rely=0, relwidth=0.5, relheight=1)
 
-    buttonExit = Button(buttonsArea, text='Çıkış', bg='#a83232', font='Calbri 12', command=lambda:[window.destroy()])
+    buttonExit = Button(buttonsArea, text='Çıkış', bg='#a83232', font='Calbri 12', command=lambda: [window.destroy()])
     buttonExit.place(relx=0.5, rely=0, relwidth=0.5, relheight=1)
 
-    homeButton = Button(frameBG,  text='Ana Menü', bg='#2596be', font='Calbri 12', command=lambda:[window.destroy(), startScreen()])
+    homeButton = Button(frameBG, text='Ana Menü', bg='#2596be', font='Calbri 12',
+                        command=lambda: [window.destroy(), startScreen()])
     homeButton.place(relx=0.4, rely=0.8, relwidth=0.2, relheight=0.05)
 
     window.mainloop()
 
+def nonQuestionScreen():
+    window = Tk()
 
+    window.title("Bilgi Yarışması")
+    window.geometry("800x600")
+
+    mainCanvas = Canvas(window, height=800, width=600)
+    mainCanvas.pack()
+
+    frameBG = Canvas(window, bg='#3c3f41')
+    frameBG.place(relx=0, rely=0, relwidth=1, relheight=1)
+
+    versionText = Label(window, text='version v.2.1', bg='grey')
+    versionText.place(relx=0.90, rely=0.97, relheight=0.025, relwidth=0.095 )
+
+    eliminateTextArea = Frame(frameBG, bg='#3c3f41')
+    eliminateTextArea.place(relx=0.33, rely=0.2, relwidth=0.33, relheight=0.03)
+
+    eliminateText = Label(eliminateTextArea, text="Oyun Bitti  !", bg='#3c3f41', foreground='orange',
+                          font='trebuchetms 16 bold')
+    eliminateText.place(relx=0, rely=0.1, relwidth=1, relheight=0.99)
+
+    scoreBoardArea = Frame(frameBG, bg='#2f2f2f')
+    scoreBoardArea.place(relx=0.4, rely=0.35, relwidth=0.2, relheight=0.2)
+
+    scoreBoardTrueScore = Label(scoreBoardArea, text=f'Doğru Cevap: ', bg='grey', font='calbri 11', justify=LEFT)
+    scoreBoardTrueScore.place(relx=0, rely=0, relwidth=0.8, relheight=0.3)
+
+    scoreText = Label(scoreBoardArea, bg='white', text=f'{trueAnswerPoint}')
+    scoreText.place(relx=0.8, rely=0, relwidth=0.2, relheight=0.3)
+
+    scoreBoardWrongScore = Label(scoreBoardArea, text=f'Yanlış Cevap: ', bg='grey', font='calbri 11', justify=LEFT)
+    scoreBoardWrongScore.place(relx=0, rely=0.35, relwidth=0.8, relheight=0.3)
+
+    scoreText2 = Label(scoreBoardArea, bg='white', text=f'{wrongAnswerPoint}')
+    scoreText2.place(relx=0.8, rely=0.35, relwidth=0.2, relheight=0.3)
+
+    scoreBoardPointScore = Label(scoreBoardArea, text=f'Toplam Puan: ', bg='grey', font='calbri 11', justify=LEFT)
+    scoreBoardPointScore.place(relx=0, rely=0.7, relwidth=0.8, relheight=0.3)
+
+    scoreText3 = Label(scoreBoardArea, bg='white', text=f'{totalAnswerPoint}')
+    scoreText3.place(relx=0.8, rely=0.7, relwidth=0.2, relheight=0.3)
+
+    buttonsArea = Frame(window, bg='white')
+    buttonsArea.place(relx=0.4, rely=0.7, relwidth=0.2, relheight=0.08)
+
+    buttonStart = Button(buttonsArea, text='Yeniden Başla', bg='#32a852', font='Calbri 12 bold', wraplength=100,
+                         command=lambda: [window.destroy(),resetPoints(), resetQuestions(),mainScreen()])
+    buttonStart.place(relx=0, rely=0, relwidth=0.5, relheight=1)
+
+    buttonExit = Button(buttonsArea, text='Çıkış', bg='#a83232', font='Calbri 12', command=lambda: [window.destroy()])
+    buttonExit.place(relx=0.5, rely=0, relwidth=0.5, relheight=1)
+
+    homeButton = Button(frameBG, text='Ana Menü', bg='#2596be', font='Calbri 12',
+                        command=lambda: [window.destroy(), startScreen()])
+    homeButton.place(relx=0.4, rely=0.8, relwidth=0.2, relheight=0.05)
+    messagebox.showwarning("Oyun Bitmek Zorunda Kaldı!", "Yetersiz soru sayısı nedeniyle oyun sonlandı.")
+    window.mainloop()
+
+def winGame():
+    window = Tk()
+
+    window.title("Bilgi Yarışması")
+    window.geometry("800x600")
+
+    mainCanvas = Canvas(window, height=800, width=600)
+    mainCanvas.pack()
+
+    frameBG = Canvas(window, bg='#3c3f41')
+    frameBG.place(relx=0, rely=0, relwidth=1, relheight=1)
+
+    versionText = Label(window, text='version v.2.1', bg='grey')
+    versionText.place(relx=0.90, rely=0.97, relheight=0.025, relwidth=0.095 )
+
+    eliminateTextArea = Frame(frameBG, bg='#3c3f41')
+    eliminateTextArea.place(relx=0.33, rely=0.2, relwidth=0.33, relheight=0.03)
+
+    eliminateText = Label(eliminateTextArea, text="TEBRİKLER  !", bg='#3c3f41', foreground='GREEN',
+                          font='trebuchetms 16 bold')
+    eliminateText.place(relx=0, rely=0.1, relwidth=1, relheight=0.99)
+
+    scoreBoardArea = Frame(frameBG, bg='#2f2f2f')
+    scoreBoardArea.place(relx=0.4, rely=0.35, relwidth=0.2, relheight=0.2)
+
+    scoreBoardTrueScore = Label(scoreBoardArea, text=f'Doğru Cevap: ', bg='grey', font='calbri 11', justify=LEFT)
+    scoreBoardTrueScore.place(relx=0, rely=0, relwidth=0.8, relheight=0.3)
+
+    scoreText = Label(scoreBoardArea, bg='white', text=f'{trueAnswerPoint}')
+    scoreText.place(relx=0.8, rely=0, relwidth=0.2, relheight=0.3)
+
+    scoreBoardWrongScore = Label(scoreBoardArea, text=f'Yanlış Cevap: ', bg='grey', font='calbri 11', justify=LEFT)
+    scoreBoardWrongScore.place(relx=0, rely=0.35, relwidth=0.8, relheight=0.3)
+
+    scoreText2 = Label(scoreBoardArea, bg='white', text=f'{wrongAnswerPoint}')
+    scoreText2.place(relx=0.8, rely=0.35, relwidth=0.2, relheight=0.3)
+
+    scoreBoardPointScore = Label(scoreBoardArea, text=f'Toplam Puan: ', bg='grey', font='calbri 11', justify=LEFT)
+    scoreBoardPointScore.place(relx=0, rely=0.7, relwidth=0.8, relheight=0.3)
+
+    scoreText3 = Label(scoreBoardArea, bg='white', text=f'{totalAnswerPoint}')
+    scoreText3.place(relx=0.8, rely=0.7, relwidth=0.2, relheight=0.3)
+
+    buttonsArea = Frame(window, bg='white')
+    buttonsArea.place(relx=0.4, rely=0.7, relwidth=0.2, relheight=0.08)
+
+    buttonStart = Button(buttonsArea, text='Yeniden Başla', bg='#32a852', font='Calbri 12 bold', wraplength=100,
+                         command=lambda: [window.destroy(),resetPoints(), resetQuestions(),mainScreen()])
+    buttonStart.place(relx=0, rely=0, relwidth=0.5, relheight=1)
+
+    buttonExit = Button(buttonsArea, text='Çıkış', bg='#a83232', font='Calbri 12', command=lambda: [window.destroy()])
+    buttonExit.place(relx=0.5, rely=0, relwidth=0.5, relheight=1)
+
+    homeButton = Button(frameBG, text='Ana Menü', bg='#2596be', font='Calbri 12',
+                        command=lambda: [window.destroy(), startScreen()])
+    homeButton.place(relx=0.4, rely=0.8, relwidth=0.2, relheight=0.05)
+    messagebox.showinfo("TEBRİKLER!", "Tüm sorular doğru cevaplandı, nesin sen Einstein mı?")
+    window.mainloop()
 
 startScreen()
-#finishScreen()
