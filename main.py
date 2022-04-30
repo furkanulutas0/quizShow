@@ -577,3 +577,6 @@ def winGame():
     window.mainloop()
 
 startScreen()
+
+
+#Bu Satır GitHubdan eklendi --> Git kontrol
