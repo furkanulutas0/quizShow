@@ -11,6 +11,21 @@ Küçük çaplı bir bilgi yarışması oyunu. Hızlı Kur ile hemen oyuna başl
 - Puan sistemi değiştirildi.
 - Oyuna kombo sayacı eklendi.
 
+V3.1 ile gidereceğim hatalar;
+- Kazanma ve kaybetme ekranlarına bulunan yazıların orantısızlığını giderme.
+- Tasarımsal iyileştirmeler.
+- Bazı soruların tekrarlanma sorununu giderme.
+- Puan ve Soru sayacında ki bazen oluşan hataları giderme.
+- Performans iyileştirmeleri.
+
+V4.0 ile planladığım geliştirmeler;
+- "Oyun Kur" modülünü aktifleştirmek. Bu modül oyunu konfügüre edebilmemize imkan sağlayacak. (Soru zorluğu, süre, puan vb.)
+- "Ayarlar" modülünü aktifleştirmek. Bu modül ile oyun ayarlarını değiştirebilmemize imkan sağlayacak. (Tema değiştirme, ses yükseltme - azaltma, ses paketi değiştirme vb.)
+- "Skor Tablosu" modülünü aktifleştirmek. Bu modül ile arkadaşlarınızla aranızda rekabet etmenize imkan sağlayacak. İlk aşamada yerel olarak skorlar tutulmasını hedefliyorken ileriki düzeyde online olarak global skor tablo haline getirmeyi planlıyorum.
+- "Kullanıcı" modülünü aktifleştirmek. Bu modül ile her kullanıcının oyun verilerini toplayabilmemize ve global olarak skor tablosuna işleyebilmemize olanak sağlar. 
+- "Son oyun istatistikleri" modülünü eklemek. Bu modül ile her oyun sonunda bir önceki istatistiklerinizi görerek kendinizi kıyaslayabileceksiniz.
+- Soru sayısı ve zorluk düzeyi geliştirme. 
+
 ## V2.1 - 28.04.2022
 
 - Sağ alt tarafa versiyon etiketi eklendi.
